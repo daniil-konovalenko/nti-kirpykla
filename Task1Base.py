@@ -1,5 +1,6 @@
 import math
 import sys
+import os
 
 
 def bl(graph, demog, fd=False):
@@ -54,13 +55,16 @@ from GraphParser import graphParser
 cols = list()
 cols.append("userId")
 cols.append("birth_date")
-(demog, fd) = graphParser.parseFolderBySchema("Task1\\Task1\\trainDemography", 0, "",
+(demog, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1",
+                                                           "trainDemography"), 0, "",
                                               "userId", cols, True)
+
 cols = list()
 cols.append("from")
 cols.append("to")
 cols.append("links")
-(graph, fd) = graphParser.parseFolderBySchema("Task1\\Task1\\graph", 0, "", "from", cols,
+(graph, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1", "graph"),
+                                              0, "", "from", cols,
                                               True)
 print("data loaded")
 fdres = open("results.txt", 'w')
