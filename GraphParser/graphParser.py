@@ -322,13 +322,13 @@ def parseFolder(folderName, linesCount=0, fileDesc="", indexCol="", otherCols=li
     if fileDesc == "":
         for file in os.listdir(folderName):
             if fnmatch.fnmatch(file, 'part-*-00000'):
-                fileDesc = open(folderName + "\\" + file, 'r')
+                fileDesc = open(folderName + "/" + file, 'r')
     return (parsePigArray(fileDesc, linesCount, list(), indexCol, otherCols), fileDesc)
 
 
 def parseFolderBySchema(folderName, linesCount=0, fileDesc="", indexCol="",
                         otherCols=list(), isLists=False):
-    shemaFileName = folderName + "\\.pig_schema"
+    shemaFileName = folderName + "/.pig_schema"
 
     f = open(shemaFileName, 'r')
     line = f.readline()
@@ -337,7 +337,7 @@ def parseFolderBySchema(folderName, linesCount=0, fileDesc="", indexCol="",
     if fileDesc == "":
         for file in os.listdir(folderName):
             if fnmatch.fnmatch(file, 'part-*-00000'):
-                fileDesc = open(folderName + "\\" + file, 'r')
+                fileDesc = open(folderName + "/" + file, 'r')
     f.close()
 
     return (

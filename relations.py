@@ -1,7 +1,7 @@
 
 def mask_open(mask):
     opened = bin(mask)[2:]
-    opened = '0' + opened[-1::-1] + '0' * 20
+    opened = '0' + opened[-1::-1]
     return opened
 
 def get_non_relatives(graph, user) -> list:
@@ -58,7 +58,7 @@ def get_relationships(mask: int) -> str:
                      12: 'Grandparent',
                      13: 'Grandchild',
                      14: 'College/University fellow',
-                     15: 'Army fellow ',
+                     15: 'Army fellow',
                      16: 'Parent in law',
                      17: 'Child in law',
                      18: 'Godparent',
