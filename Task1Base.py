@@ -12,13 +12,13 @@ def common_friends(userId_1, userId_2, graph):
     c_friends = list(neighborhood_1 & neighborhood_2)
     return len(c_friends)
 
-def jaccard_from_kailiak(userId_1, userId_2, graph):
-    #user1 is user for which we make a prediction
-    neighborhood_1 = set(graph[userId_1])
-    neighborhood_2 = set(graph[userId_2])
-    c_friends = neighborhood_1 & neighborhood_2
 
-    return len(c_friends) / len(neighborhood_1)
+def jaccard_coefficient(userId_1: int, userId_2: int, graph: dict) -> float:
+    neighborhood_1 = set(graph[userId_1][0])
+    neighborhood_2 = set(graph[userId_2][0])
+    c_friends = neighborhood_1 & neighborhood_2
+    all_friends = neighborhood_1 | neighborhood_2
+    return len(c_friends) / len(all_friends)
 
 def jaccard_from_kailiak(userId_1, userId_2, graph):
     #user1 is user for which we make a prediction
