@@ -47,7 +47,7 @@ def mask_open(mask):
 
 
 def prediction_function(demog, graph):
-    results = np.empty((0, 1))
+    results = np.empty((0, 2))
     for userId, neighbohood in graph.items():
         try:
             if demog[userId] != None:
@@ -60,6 +60,7 @@ def prediction_function(demog, graph):
         probaility_score = np.array(list(map(is_probably_same_age, neighbohood)))
         ages = np.array(list(map(lambda user: demog[user[0]], neighbohood)))
         result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
+        result = np.hstack((userId, result))
         results = np.vstack((results, result))
     return results
 
