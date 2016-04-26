@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from relations import is_relevant, is_probably_same_age
 from sklearn.linear_model import LinearRegression
-
+import pymongo
 
 def visualisation(data: np.ndarray, a, b):
     x_line = [random.randint(0, 100) for x in range(10)]
@@ -17,36 +17,22 @@ def visualisation(data: np.ndarray, a, b):
     plt.show()
 
 
-def common_friends(userId_1: int, userId_2: list, graph: dict) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
-    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
-    c_friends = list(neighborhood_1 & neighborhood_2)
-    return len(c_friends)
 
-
-def jaccard_coefficient(userId_1: int, userId_2: int, graph: dict) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
-    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
+def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1)))
+    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2)))
     c_friends = neighborhood_1 & neighborhood_2
     all_friends = neighborhood_1 | neighborhood_2
     return len(c_friends) / len(all_friends)
-
-
-def jaccard_from_kailiak(userId_1: int, userId_2: int, graph: dict) -> float:
-    # user1 is user for which we make a prediction
-    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
-    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
-    c_friends = neighborhood_1 & neighborhood_2
-    return len(c_friends) / len(neighborhood_1)
 
 
 def prediction_function(demog, graph):
     results = np.empty((0, 2))
     y = np.empty((0, 1))
     without_age = list()
-    for userId, neighborhood in graph.items():
+    for userId, neighborhood in db.user_friends.find():
         try:
-            age = demog[userId]
+            age = get_age(userId)
             if age != None:
                 y = np.vstack((y, age))
         except:
@@ -72,7 +58,7 @@ def prediction_function(demog, graph):
 
         for i, user in enumerate(neighborhood):
             try:
-                jaccard_score.append(jaccard_coefficient(userId, user[0], graph))
+                jaccard_score.append(jaccard_coefficient(userId, user[0]))
             except KeyError:
                 jaccard_score.append(0.5)
             prob_score = is_probably_same_age(user)
@@ -88,7 +74,7 @@ def prediction_function(demog, graph):
         jaccard_score = np.array(jaccard_score)
         print(jaccard_score.shape)
         probaility_score = np.array(probaility_score)
-        result = np.sum(jaccard_score * ages) / np.sum(jaccard_score)
+        result = np.sum(jaccard_score * probaility_score * ages) / np.sum(jaccard_score)
         result = np.hstack((userId, result))
         results = np.vstack((results, result))
     return y, results, without_age, bad_ids
