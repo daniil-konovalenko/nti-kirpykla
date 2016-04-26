@@ -40,10 +40,7 @@ def jaccard_from_kailiak(userId_1: int, user_2: list, graph: dict) -> float:
     return len(c_friends) / len(neighborhood_1)
 
 
-def mask_open(mask):
-    opened = bin(mask)[2:]
-    opened = '0' + opened[-1::-1] + '0' * 20
-    return opened
+
 
 
 def prediction_function(demog, graph):
