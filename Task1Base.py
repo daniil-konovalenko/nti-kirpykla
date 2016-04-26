@@ -45,17 +45,16 @@ def jaccard_from_kailiak(userId_1: int, user_2: list, graph: dict) -> float:
 
 def prediction_function(demog, graph):
     results = np.empty((0, 2))
-    for userId, neighbohood in graph.items():
+    for userId, neighborhood in graph.items():
         try:
             if demog[userId] != None:
                 continue
         except:
             print('Age for user {} have to be predicted'.format(userId))
-        neighbohood = np.array(list(map(is_relevant, neighbohood)))
-        jaccard = partial(jaccard_coefficient, userId_1=userId, graph=graph)
-        jaccard_score = np.array(list(map(jaccard, neighbohood)))
-        probaility_score = np.array(list(map(is_probably_same_age, neighbohood)))
-        ages = np.array(list(map(lambda user: demog[user[0]], neighbohood)))
+        neighborhood = np.array(list(map(is_relevant, neighborhood)))
+        jaccard_score = np.array([jaccard_coefficient(userId, user) for user in neighbohood])
+        probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
+        ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
         result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
         result = np.hstack((userId, result))
         results = np.vstack((results, result))
