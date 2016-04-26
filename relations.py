@@ -7,7 +7,7 @@ def get_non_relatives(graph, user) -> list:
     return non_relatives
 
 
-def is_relative(user:tuple) -> bool:
+def is_relative(user: list) -> bool:
     mask = user[1]
     relationship = get_relationships(mask)
     relatives =  {'Parent',
@@ -28,7 +28,7 @@ def is_relative(user:tuple) -> bool:
     else:
         return False
 
-def is_probably_same_age(user: tuple, k=3):
+def is_probably_same_age(user: list, k=3):
     mask = user[1]
     relationships = get_relationships(mask)
     same_agers = {'Army fellow',
@@ -69,7 +69,7 @@ def get_relationships(mask: int) -> str:
 
     return  result
 
-def is_relevant(graph, user):
+def is_relevant(user):
     if is_probably_same_age(user) and not is_relative(user):
         return True
     else:
