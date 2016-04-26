@@ -58,35 +58,33 @@ def prediction_function(demog, graph):
         except KeyError:
             continue
         print("{}' neighborhood exists".format(userId))
-
         probaility_score = list()
         jaccard_score = list()
         ages = list()
         bad_ids = list()
+        if userId == 786651:
+            continue
         for i, user in enumerate(neighborhood):
             try:
                 jaccard_score.append(jaccard_coefficient(userId, user[0], graph))
             except KeyError:
-                jaccard_score.append(0.5)
-                bad_ids.append(i)
+                continue
             prob_score = is_probably_same_age(user)
             probaility_score.append(prob_score)
             try:
                 ages.append(demog[user[1]])
             except KeyError:
-                jaccard_score = np.delete(jaccard_score, i)
-                probaility_score = np.delete(probaility_score, i)
-                bad_ids.append(i)
-
-
+                jaccard_score.pop()
+                probaility_score.pop()
+                continue
         ages = np.array(ages)
+        print(ages.shape)
         jaccard_score = np.array(jaccard_score)
+        print(jaccard_score.shape)
         probaility_score = np.array(probaility_score)
-
-        result = np.sum(jaccard_score * probaility_score * ages) / np.sum(jaccard_score)
+        result = np.sum(jaccard_score * ages) / np.sum(jaccard_score)
         result = np.hstack((userId, result))
         results = np.vstack((results, result))
-
     return y, results, without_age, bad_ids
 
 
