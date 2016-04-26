@@ -1,12 +1,12 @@
 import os
 import random
 import sys
-
+import pickle
 
 import matplotlib.pyplot as plt
 import numpy as np
 from relations import is_relevant, is_probably_same_age
-#from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression
 
 
 def visualisation(data: np.ndarray, a, b):
@@ -47,12 +47,13 @@ def prediction_function(demog, graph):
     missed = list()
     for userId, neighborhood in graph.items():
         try:
-            if demog[userId] == None:
-                without_age.append(userId)
-                continue
+            age = demog[userId]
+            if age != None:
+                y = np.vstack((y, age))
         except:
-            print('Age for user {} have to be predicted'.format(userId))
-            y = np.vstack((y, demog[userId]))
+            without_age.append(userId)
+            continue
+        print('Age for user {} have to be predicted'.format(userId))
         try:
             neighborhood = np.array(list(filter(is_relevant, neighborhood)))
             print("{}' neighborhood exists".format(userId))
@@ -67,7 +68,7 @@ def prediction_function(demog, graph):
         except KeyError:
             missed.append(userId)
             continue
-    return y, results
+    return y, results, without_age
 
 
 def bl(graph, demog, fd=False):
@@ -126,14 +127,24 @@ cols.append("birth_date")
 (demog, fd) = graphParser.parseFolderBySchema("Task1/Task1/trainDemography", 0, "", "userId", cols, True)
 
 
+
 cols = list()
 cols.append("from")
 cols.append("to")
 cols.append("links")
 cols.append('mask')
 (graph, fd) = graphParser.parseFolderBySchema("Task1/Task1/graph", 0, "", "from", cols, True)
+try:
+    with open("graph.pkl", "wb") as fout:
+        pickle.dump(graph, fout)
+except:
 
-
-print(prediction_function(demog, graph))
+    y, results, without_age = prediction_function(demog, graph)
+    X = results[:, 1]
+    model = LinearRegression(normalize=True, n_jobs=-1)
+    model.fit(X, y)
+    y_hat = model.predict(without_age)
+    with open("y_hat.pkl", "wb") as f:
+        pickle.dump(y_hat, f)
 
 
