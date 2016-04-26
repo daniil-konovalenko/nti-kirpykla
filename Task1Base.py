@@ -17,16 +17,16 @@ def visualisation(data: np.ndarray, a, b):
     plt.show()
 
 
-def common_friends(userId_1: int, userId_2: list, graph: dict) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
-    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
+def common_friends(userId_1: int, userId_2: list) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1))
+    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2))
     c_friends = list(neighborhood_1 & neighborhood_2)
     return len(c_friends)
 
 
-def jaccard_coefficient(userId_1: int, userId_2: int, graph: dict) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
-    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
+def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1)))
+    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2)))
     c_friends = neighborhood_1 & neighborhood_2
     all_friends = neighborhood_1 | neighborhood_2
     return len(c_friends) / len(all_friends)
@@ -40,14 +40,16 @@ def jaccard_from_kailiak(userId_1: int, userId_2: int, graph: dict) -> float:
     return len(c_friends) / len(neighborhood_1)
 
 
-def prediction_function(demog, graph):
+def prediction_function():
     results = np.empty((0, 2))
     y = np.empty((0, 1))
     without_age = list()
     missed = list()
-    for userId, neighborhood in graph.items():
+    for user in db.user_friends.find():
+        userId = user['id']
+        neighborhood = user['friends']
         try:
-            age = demog[userId]
+            age = get_age(userId)
             if age != None:
                 y = np.vstack((y, age))
         except:
