@@ -1,52 +1,53 @@
-import sys
 import os
-
 import random
+import sys
+from functools import partial
+
 import matplotlib.pyplot as plt
 import numpy as np
 from relations import is_relevant, is_probably_same_age
-from functools import partial
-from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
 
-def visualisation(data : np.ndarray, a, b):
+
+def visualisation(data: np.ndarray, a, b):
     x_line = [random.randint(0, 100) for x in range(10)]
-    y_line = [a*x_line[i] + b for i in range(10)]
+    y_line = [a * x_line[i] + b for i in range(10)]
     plt.plot(y_line, x_line)
-    plt.scatter(data[:,0], data[:,1])
+    plt.scatter(data[:, 0], data[:, 1])
     plt.show()
 
-def common_friends(userId_1, userId_2, graph):
-    neighborhood_1 = set(graph[userId_1])
-    neighborhood_2 = set(graph[userId_2])
 
+def common_friends(userId_1: int, user_2: list, graph: dict) -> float:
+    neighborhood_1 = set(graph[userId_1])
+    neighborhood_2 = set(graph[user_2[0]])
     c_friends = list(neighborhood_1 & neighborhood_2)
     return len(c_friends)
 
 
-def jaccard_coefficient(userId_1: int, userId_2: int, graph: dict) -> float:
-    neighborhood_1 = set(graph[userId_1][0])
-    neighborhood_2 = set(graph[userId_2][0])
+def jaccard_coefficient(userId_1: int, user_2: list, graph: dict) -> float:
+    neighborhood_1 = set(graph[userId_1])
+    neighborhood_2 = set(graph[user_2[0]])
     c_friends = neighborhood_1 & neighborhood_2
     all_friends = neighborhood_1 | neighborhood_2
     return len(c_friends) / len(all_friends)
 
-def jaccard_from_kailiak(userId_1, userId_2, graph):
-    #user1 is user for which we make a prediction
-    neighborhood_1 = set(graph[userId_1])
-    neighborhood_2 = set(graph[userId_2])
-    c_friends = neighborhood_1 & neighborhood_2
 
+def jaccard_from_kailiak(userId_1: int, user_2: list, graph: dict) -> float:
+    # user1 is user for which we make a prediction
+    neighborhood_1 = set(graph[userId_1])
+    neighborhood_2 = set(graph[user_2[0]])
+    c_friends = neighborhood_1 & neighborhood_2
     return len(c_friends) / len(neighborhood_1)
 
 
 def mask_open(mask):
     opened = bin(mask)[2:]
-    opened = '0' + opened[-1::-1] + '0'*20
+    opened = '0' + opened[-1::-1] + '0' * 20
     return opened
 
 
-def prediction_function(demog, graph, write_file):
-    res = np.empty((0, 1))
+def prediction_function(demog, graph):
+    results = np.empty((0, 1))
     for userId, neighbohood in graph.items():
         try:
             if demog[userId] != None:
@@ -57,7 +58,10 @@ def prediction_function(demog, graph, write_file):
         jaccard = partial(jaccard_coefficient, userId_1=userId, graph=graph)
         jaccard_score = np.array(list(map(jaccard, neighbohood)))
         probaility_score = np.array(list(map(is_probably_same_age, neighbohood)))
-
+        ages = np.array(list(map(lambda user: demog[user[0]], neighbohood)))
+        result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
+        results = np.vstack((results, result))
+    return results
 
 
 def bl(graph, demog, fd=False):
@@ -106,8 +110,8 @@ def bl(graph, demog, fd=False):
             fd.write(str(pId) + '\t' + str(avg) + '\n')
     return res
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     from GraphParser import graphParser
 
     cols = list()
