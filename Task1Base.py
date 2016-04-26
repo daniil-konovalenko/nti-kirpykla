@@ -53,9 +53,13 @@ def prediction_function(demog, graph):
 
         try:
             neighborhood = np.array(list(filter(is_relevant, neighborhood)))
+            print("{}' neighborhood exists".format(userId))
             jaccard_score = np.array([jaccard_coefficient(userId, user[0], graph) for user in neighborhood])
+            print(jaccard_score)
             probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
+            print(probaility_score)
             ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
+            print(ages)
             result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
             result = np.hstack((userId, result))
             results = np.vstack((results, result))
@@ -112,24 +116,21 @@ def bl(graph, demog, fd=False):
     return res
 
 
-if __name__ == '__main__':
-    from GraphParser import graphParser
+from GraphParser import graphParser
 
-    cols = list()
-    cols.append("userId")
-    cols.append("birth_date")
-    (demog, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1",
-                                                               "trainDemography"), 0, "",
-                                                  "userId", cols, True)
 
-    cols = list()
-    cols.append("from")
-    cols.append("to")
-    cols.append("links")
-    cols.append("mask")
-    (graph, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1", "graph"),
-                                                  0, "", "from", cols,
-                                                  True)
-    print("data loaded")
-    fdres = open("results.txt", 'w')
-    bl(graph, demog, fdres)
+cols = list()
+cols.append("userId")
+cols.append("birth_date")
+(demog, fd) = graphParser.parseFolderBySchema("Task1/Task1/trainDemography", 0, "", "userId", cols, True)
+
+cols = list()
+cols.append("from")
+cols.append("to")
+cols.append("links")
+cols.append('mask')
+(graph, fd) = graphParser.parseFolderBySchema("Task1/Task1/graph", 0, "", "from", cols, True)
+
+print(prediction_function(demog, graph))
+
+
