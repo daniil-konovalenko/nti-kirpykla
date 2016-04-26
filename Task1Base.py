@@ -2,6 +2,13 @@ import math
 import sys
 import os
 
+def common_friends(userId_1, userId_2, graph):
+    neighborhood_1 = set(graph[userId_1])
+    neighborhood_2 = set(graph[userId_2])
+
+    c_friends = list(neighborhood_1 & neighborhood_2)
+    return len(c_friends)
+
 def mask_open(mask):
     opened = bin(mask)[2:]
     opened = '0' + opened[-1::-1]
