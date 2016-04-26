@@ -1,7 +1,17 @@
 
 import sys
 import os
+import random
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn import linear_model
+
+def visualisation(data : np.ndarray, a, b):
+    x_line = [random.randint(0, 100) for x in range(10)]
+    y_line = [a*x_line[i] + b for i in range(10)]
+    plt.plot(y_line, x_line)
+    plt.scatter(data[:,0], data[:,1])
+    plt.show()
 
 def common_friends(userId_1, userId_2, graph):
     neighborhood_1 = set(graph[userId_1])
