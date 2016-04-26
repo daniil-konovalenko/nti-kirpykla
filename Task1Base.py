@@ -1,6 +1,7 @@
 
 import sys
 import os
+from sklearn import linear_model
 
 def common_friends(userId_1, userId_2, graph):
     neighborhood_1 = set(graph[userId_1])
