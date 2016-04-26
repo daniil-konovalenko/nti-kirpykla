@@ -17,16 +17,16 @@ def visualisation(data: np.ndarray, a, b):
     plt.show()
 
 
-def common_friends(userId_1: int, user_2: list, graph: dict) -> float:
-    neighborhood_1 = set(graph[userId_1])
-    neighborhood_2 = set(graph[user_2[0]])
+def common_friends(userId_1: int, userId_2: list, graph: dict) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
+    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
     c_friends = list(neighborhood_1 & neighborhood_2)
     return len(c_friends)
 
 
-def jaccard_coefficient(userId_1: int, user_2: list, graph: dict) -> float:
-    neighborhood_1 = set(graph[userId_1])
-    neighborhood_2 = set(graph[user_2[0]])
+def jaccard_coefficient(userId_1: int, userId_2: list, graph: dict) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
+    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
     c_friends = neighborhood_1 & neighborhood_2
     all_friends = neighborhood_1 | neighborhood_2
     return len(c_friends) / len(all_friends)
@@ -34,8 +34,8 @@ def jaccard_coefficient(userId_1: int, user_2: list, graph: dict) -> float:
 
 def jaccard_from_kailiak(userId_1: int, user_2: list, graph: dict) -> float:
     # user1 is user for which we make a prediction
-    neighborhood_1 = set(graph[userId_1])
-    neighborhood_2 = set(graph[user_2[0]])
+    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
+    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
     c_friends = neighborhood_1 & neighborhood_2
     return len(c_friends) / len(neighborhood_1)
 
