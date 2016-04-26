@@ -17,16 +17,16 @@ def visualisation(data: np.ndarray, a, b):
     plt.show()
 
 
-def common_friends(userId_1: int, userId_2: list) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1)))
-    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2)))
+def common_friends(userId_1: int, userId_2: list, graph: dict) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
+    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
     c_friends = list(neighborhood_1 & neighborhood_2)
     return len(c_friends)
 
 
-def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1)))
-    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2)))
+def jaccard_coefficient(userId_1: int, userId_2: int, graph: dict) -> float:
+    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
+    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
     c_friends = neighborhood_1 & neighborhood_2
     all_friends = neighborhood_1 | neighborhood_2
     return len(c_friends) / len(all_friends)
@@ -40,38 +40,54 @@ def jaccard_from_kailiak(userId_1: int, userId_2: int, graph: dict) -> float:
     return len(c_friends) / len(neighborhood_1)
 
 
-def prediction_function():
+def prediction_function(demog, graph):
     results = np.empty((0, 2))
     y = np.empty((0, 1))
     without_age = list()
-    missed = list()
-    for user in db.user_friends.find():
-        userId = user['id']
-        neighborhood = user['friends']
+    for userId, neighborhood in graph.items():
         try:
-            age = get_age(userId)
+            age = demog[userId]
             if age != None:
                 y = np.vstack((y, age))
         except:
             without_age.append(userId)
-            print(userId)
             continue
-        print('Age for user {} have to be predicted'.format(userId))
         try:
+            print('Age for user {} have to be predicted'.format(userId))
             neighborhood = np.array(list(filter(is_relevant, neighborhood)))
-            print("{}' neighborhood exists".format(userId))
-            jaccard_score = np.array([jaccard_coefficient(userId, user[0]) for user in neighborhood])
-            print(jaccard_score)
-            probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
-            ages = np.array(list(map(lambda user: get_age(user[0]), neighborhood)))
-            print(ages)
-            result = np.sum(jaccard_score * probaility_score * ages) / np.sum(jaccard_score)
-            result = np.hstack((userId, result))
-            results = np.vstack((results, result))
         except KeyError:
-            missed.append(userId)
             continue
-    return y, results, without_age
+        print("{}' neighborhood exists".format(userId))
+
+        probaility_score = list()
+        jaccard_score = list()
+        ages = list()
+        bad_ids = list()
+        for i, user in enumerate(neighborhood):
+            try:
+                jaccard_score.append(jaccard_coefficient(userId, user[0], graph))
+            except KeyError:
+                jaccard_score.append(0.5)
+                bad_ids.append(i)
+            prob_score = is_probably_same_age(user)
+            probaility_score.append(prob_score)
+            try:
+                ages.append(demog[user[1]])
+            except KeyError:
+                jaccard_score = np.delete(jaccard_score, i)
+                probaility_score = np.delete(probaility_score, i)
+                bad_ids.append(i)
+
+
+        ages = np.array(ages)
+        jaccard_score = np.array(jaccard_score)
+        probaility_score = np.array(probaility_score)
+
+        result = np.sum(jaccard_score * probaility_score * ages) / np.sum(jaccard_score)
+        result = np.hstack((userId, result))
+        results = np.vstack((results, result))
+
+    return y, results, without_age, bad_ids
 
 
 def bl(graph, demog, fd=False):
@@ -120,17 +136,8 @@ def bl(graph, demog, fd=False):
             fd.write(str(pId) + '\t' + str(avg) + '\n')
     return res
 
-
+''''
 from GraphParser import graphParser
-
-
-cols = list()
-cols.append("userId")
-cols.append("birth_date")
-(demog, fd) = graphParser.parseFolderBySchema("Task1/Task1/trainDemography", 0, "", "userId", cols, True)
-
-
-
 cols = list()
 cols.append("from")
 cols.append("to")
@@ -140,6 +147,14 @@ cols.append('mask')
 with open("graph.pkl", "wb") as fout:
     pickle.dump(graph, fout)
 
+cols = list()
+cols.append("userId")
+cols.append("birth_date")
+(demog, fd) = graphParser.parseFolderBySchema("Task1/Task1/trainDemography", 0, "", "userId", cols, True)
+with open("demog.pkl", "wb") as fout:
+    pickle.dump(demog, fout)
+graph = pickle.load(open('graph.pkl', 'rb'))
+
 y, results, without_age = prediction_function(demog, graph)
 X = results[:, 1]
 model = LinearRegression(normalize=True, n_jobs=-1)
@@ -147,5 +162,5 @@ model.fit(X, y)
 y_hat = model.predict(without_age)
 with open("y_hat.pkl", "wb") as f:
     pickle.dump(y_hat, f)
-
+'''
 

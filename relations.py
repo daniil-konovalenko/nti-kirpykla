@@ -39,8 +39,8 @@ def is_probably_same_age(user: list, k=3):
                   'Schoolmate',
                   }
     if relationships & same_agers:
-        return True * k
-    return False
+        return 1 * k
+    return 1
 
 def get_relationships(mask: int) -> str:
     result = set()
