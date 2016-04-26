@@ -3,9 +3,15 @@ import sys
 import os
 
 def mask_open(mask):
-    opened = bin(mask)[1:]
-    opened = opened[-1::-1]
+    opened = bin(mask)[2:]
+    opened = '0' + opened[-1::-1]
     return opened
+
+def prediction_function(users, to_predict_users, graph, write_file):
+    for id_user, value_user in to_predict_users.items():
+        #
+        for id_friend, mask_friend in graph[id_user]:
+
 
 def bl(graph, demog, fd=False):
     res = list()
@@ -67,6 +73,7 @@ cols = list()
 cols.append("from")
 cols.append("to")
 cols.append("links")
+cols.append("mask")
 (graph, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1", "graph"),
                                               0, "", "from", cols,
                                               True)
