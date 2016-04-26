@@ -51,7 +51,7 @@ def prediction_function(demog, graph):
                 continue
         except:
             print('Age for user {} have to be predicted'.format(userId))
-        neighborhood = np.array(list(map(is_relevant, neighborhood)))
+        neighborhood = np.array(list(filter(is_relevant, neighborhood)))
         jaccard_score = np.array([jaccard_coefficient(userId, user, graph) for user in neighborhood])
         probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
         ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
