@@ -24,13 +24,18 @@ def mask_open(mask):
     return opened
 
 
+def prediction_function(demog, graph, write_file):
+    for userId, neighbohood in graph.items():
+        try:
+            if demog[userId] != None:
+                continue
+        except:
+            print('Age for user {} have to be predicted'.format(userId))
+        for friendId in neighbohood:
+            common_score = common_friends(userId, friendId, graph)
+            jaccard_score = jaccard(userId, friendId, graph)
+            pass
 
-def prediction_function(users, to_predict_users, graph, write_file):
-    for id_user, value_user in to_predict_users.items():
-        #
-        for id_friend, mask_friend in graph[id_user]:
-            #code
-        write_file.write(str(id_user) + '\t' + str(prediction) + '\n')
 
 
 def bl(graph, demog, fd=False):
