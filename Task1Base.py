@@ -1,7 +1,6 @@
 import os
 import random
 import sys
-from functools import partial
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -24,7 +23,7 @@ def common_friends(userId_1: int, userId_2: list, graph: dict) -> float:
     return len(c_friends)
 
 
-def jaccard_coefficient(userId_1: int, userId_2: list, graph: dict) -> float:
+def jaccard_coefficient(userId_1: int, userId_2: int, graph: dict) -> float:
     neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
     neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
     c_friends = neighborhood_1 & neighborhood_2
@@ -32,7 +31,7 @@ def jaccard_coefficient(userId_1: int, userId_2: list, graph: dict) -> float:
     return len(c_friends) / len(all_friends)
 
 
-def jaccard_from_kailiak(userId_1: int, user_2: list, graph: dict) -> float:
+def jaccard_from_kailiak(userId_1: int, userId_2: int, graph: dict) -> float:
     # user1 is user for which we make a prediction
     neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
     neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
@@ -52,7 +51,7 @@ def prediction_function(demog, graph):
         except:
             print('Age for user {} have to be predicted'.format(userId))
         neighborhood = np.array(list(filter(is_relevant, neighborhood)))
-        jaccard_score = np.array([jaccard_coefficient(userId, user, graph) for user in neighborhood])
+        jaccard_score = np.array([jaccard_coefficient(userId, user[0], graph) for user in neighborhood])
         probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
         ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
         result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
