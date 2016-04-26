@@ -92,24 +92,25 @@ def bl(graph, demog, fd=False):
             fd.write(str(pId) + '\t' + str(avg) + '\n')
     return res
 
+if __name__ == '__main__':
 
-from GraphParser import graphParser
+    from GraphParser import graphParser
 
-cols = list()
-cols.append("userId")
-cols.append("birth_date")
-(demog, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1",
-                                                           "trainDemography"), 0, "",
-                                              "userId", cols, True)
+    cols = list()
+    cols.append("userId")
+    cols.append("birth_date")
+    (demog, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1",
+                                                               "trainDemography"), 0, "",
+                                                  "userId", cols, True)
 
-cols = list()
-cols.append("from")
-cols.append("to")
-cols.append("links")
-cols.append("mask")
-(graph, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1", "graph"),
-                                              0, "", "from", cols,
-                                              True)
-print("data loaded")
-fdres = open("results.txt", 'w')
-bl(graph, demog, fdres)
+    cols = list()
+    cols.append("from")
+    cols.append("to")
+    cols.append("links")
+    cols.append("mask")
+    (graph, fd) = graphParser.parseFolderBySchema(os.path.join("Task1", "Task1", "graph"),
+                                                  0, "", "from", cols,
+                                                  True)
+    print("data loaded")
+    fdres = open("results.txt", 'w')
+    bl(graph, demog, fdres)
