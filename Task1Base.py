@@ -2,6 +2,10 @@ import math
 import sys
 import os
 
+def mask_open(mask):
+    opened = bin(mask)[1:]
+    opened = opened[-1::-1]
+    return opened
 
 def bl(graph, demog, fd=False):
     res = list()
