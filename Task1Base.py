@@ -1,6 +1,9 @@
-
 import sys
 import os
+from relations import is_relevant, is_probably_same_age
+from functools import partial
+import numpy as np
+
 
 def common_friends(userId_1, userId_2, graph):
     neighborhood_1 = set(graph[userId_1])
