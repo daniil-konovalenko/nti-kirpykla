@@ -4,13 +4,17 @@ import os
 
 def mask_open(mask):
     opened = bin(mask)[2:]
-    opened = '0' + opened[-1::-1]
+    opened = '0' + opened[-1::-1] + '0'*20
     return opened
+
+
 
 def prediction_function(users, to_predict_users, graph, write_file):
     for id_user, value_user in to_predict_users.items():
         #
         for id_friend, mask_friend in graph[id_user]:
+            #code
+        write_file.write(str(id_user) + '\t' + str(prediction) + '\n'
 
 
 def bl(graph, demog, fd=False):
