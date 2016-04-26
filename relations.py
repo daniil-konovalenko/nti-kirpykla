@@ -1,7 +1,7 @@
 
 def mask_open(mask):
     opened = bin(mask)[2:]
-    opened = '0' + opened[-1::-1] + '0' * 20
+    opened = '0' + opened[-1::-1]
     return opened
 
 def get_non_relatives(graph, user) -> list:
