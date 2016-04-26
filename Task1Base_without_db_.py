@@ -54,7 +54,14 @@ def prediction_function(demog, graph):
             continue
         try:
             print('Age for user {} have to be predicted'.format(userId))
-            neighborhood = np.array(list(filter(is_relevant, neighborhood)))
+            neighborhood = list()
+            if len(neighborhood) == 1:
+                neighborhood.append(is_relevant(neighborhood))
+            else:
+                for user in neighborhood:
+                    a = is_relevant(user)
+                    neighborhood.append(a)
+            neighborhood = np.array(neighborhood)
         except KeyError:
             continue
         print("{}' neighborhood exists".format(userId))
@@ -62,13 +69,12 @@ def prediction_function(demog, graph):
         jaccard_score = list()
         ages = list()
         bad_ids = list()
-        if userId == 786651:
-            continue
+
         for i, user in enumerate(neighborhood):
             try:
                 jaccard_score.append(jaccard_coefficient(userId, user[0], graph))
             except KeyError:
-                continue
+                jaccard_score.append(0.5)
             prob_score = is_probably_same_age(user)
             probaility_score.append(prob_score)
             try:
