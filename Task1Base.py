@@ -5,7 +5,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 from relations import is_relevant, is_probably_same_age
-from sklearn.linear_model import LinearRegression
+#from sklearn.linear_model import LinearRegression
 
 
 def visualisation(data: np.ndarray, a, b):
@@ -39,25 +39,30 @@ def jaccard_from_kailiak(userId_1: int, userId_2: int, graph: dict) -> float:
     return len(c_friends) / len(neighborhood_1)
 
 
-
-
-
 def prediction_function(demog, graph):
     results = np.empty((0, 2))
+    without_age = list()
+    missed = list()
     for userId, neighborhood in graph.items():
         try:
             if demog[userId] != None:
+                without_age.append(userId)
                 continue
         except:
             print('Age for user {} have to be predicted'.format(userId))
-        neighborhood = np.array(list(filter(is_relevant, neighborhood)))
-        jaccard_score = np.array([jaccard_coefficient(userId, user[0], graph) for user in neighborhood])
-        probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
-        ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
-        result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
-        result = np.hstack((userId, result))
-        results = np.vstack((results, result))
-    return results
+
+        try:
+            neighborhood = np.array(list(filter(is_relevant, neighborhood)))
+            jaccard_score = np.array([jaccard_coefficient(userId, user[0], graph) for user in neighborhood])
+            probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
+            ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
+            result = np.sum(jaccard_score.dot(probaility_score.T) * ages)
+            result = np.hstack((userId, result))
+            results = np.vstack((results, result))
+        except KeyError:
+            missed.append(userId)
+            continue
+    return results, missed, without_age
 
 
 def bl(graph, demog, fd=False):
