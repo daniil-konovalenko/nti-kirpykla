@@ -1,6 +1,22 @@
-import math
+
 import sys
 import os
+
+def common_friends(userId_1, userId_2, graph):
+    neighborhood_1 = set(graph[userId_1])
+    neighborhood_2 = set(graph[userId_2])
+
+    c_friends = list(neighborhood_1 & neighborhood_2)
+    return len(c_friends)
+
+def jaccard(userId_1, userId_2, graph):
+    neighborhood_1 = set(graph[userId_1])
+    neighborhood_2 = set(graph[userId_2])
+    c_friends = neighborhood_1 & neighborhood_2
+    all_friends = neighborhood_1 | neighborhood_2
+
+    return len(c_friends) / len(all_friends)
+
 
 def mask_open(mask):
     opened = bin(mask)[2:]
@@ -14,7 +30,7 @@ def prediction_function(users, to_predict_users, graph, write_file):
         #
         for id_friend, mask_friend in graph[id_user]:
             #code
-        write_file.write(str(id_user) + '\t' + str(prediction) + '\n'
+        write_file.write(str(id_user) + '\t' + str(prediction) + '\n')
 
 
 def bl(graph, demog, fd=False):
