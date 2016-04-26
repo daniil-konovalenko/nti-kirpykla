@@ -59,10 +59,10 @@ def prediction_function():
         try:
             neighborhood = np.array(list(filter(is_relevant, neighborhood)))
             print("{}' neighborhood exists".format(userId))
-            jaccard_score = np.array([jaccard_coefficient(userId, user[0], graph) for user in neighborhood])
+            jaccard_score = np.array([jaccard_coefficient(userId, user[0]) for user in neighborhood])
             print(jaccard_score)
             probaility_score = np.array(list(map(is_probably_same_age, neighborhood)))
-            ages = np.array(list(map(lambda user: demog[user[0]], neighborhood)))
+            ages = np.array(list(map(lambda user: get_age(user[0]), neighborhood)))
             print(ages)
             result = np.sum(jaccard_score * probaility_score * ages) / np.sum(jaccard_score)
             result = np.hstack((userId, result))
