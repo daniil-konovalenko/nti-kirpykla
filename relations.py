@@ -73,6 +73,9 @@ def get_relationships(mask: int) -> str:
     return  result
 
 def is_relevant(user):
+    mask = user[1]
+    if not mask:
+        return True
     if is_probably_same_age(user) and not is_relative(user):
         return True
     else:
