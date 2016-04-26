@@ -33,16 +33,17 @@ def mask_open(mask):
 
 
 def prediction_function(demog, graph, write_file):
+    res = np.empty((0, 1))
     for userId, neighbohood in graph.items():
         try:
             if demog[userId] != None:
                 continue
         except:
             print('Age for user {} have to be predicted'.format(userId))
-        for friendId in neighbohood:
-            common_score = common_friends(userId, friendId, graph)
-            jaccard_score = jaccard(userId, friendId, graph)
-            pass
+        neighbohood = np.array(list(map(is_relevant, neighbohood)))
+        jaccard = partial(jaccard_coefficient, userId_1=userId, graph=graph)
+        jaccard_score = np.array(list(map(jaccard, neighbohood)))
+        probaility_score = np.array(list(map(is_probably_same_age, neighbohood)))
 
 
 
