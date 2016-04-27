@@ -1,4 +1,4 @@
-from ..Day_1.database import get_friends
+from ..Day_1.database import get_friends, get_location
 
 
 def mask_open(mask):
