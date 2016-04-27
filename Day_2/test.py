@@ -1,8 +1,8 @@
-from GraphParser import graphParser
-from Day_2.in_memory import get_location, get_friends
+
+from in_memory import get_location, get_friends
 import random
 import numpy as np
-from Day_2.metrics import k_nearest
+from metrics import k_nearest
 import os
 
 

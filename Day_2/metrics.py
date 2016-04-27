@@ -1,4 +1,4 @@
-from Day_2.in_memory import get_friends, get_location
+from in_memory import get_friends, get_location
 
 
 def mask_open(mask):
