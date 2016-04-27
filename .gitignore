@@ -1,5 +1,6 @@
 task/
 .idea/
+.ipynb_checkpoints/
 Day_1/res/demog.pkl
 Day_1/res/graph.pkl
 Day_2/Task2/Task2/graph
