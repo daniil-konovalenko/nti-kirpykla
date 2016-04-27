@@ -1,5 +1,5 @@
-from Day_1.database import get_location, get_friends
-from operator import itemgetter
+from ..Day_2.in_memory import get_friends
+
 
 def mask_open(mask):
     mask = int(mask)
