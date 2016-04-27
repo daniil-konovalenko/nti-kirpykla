@@ -1,39 +1,13 @@
-import pymongo
 import os
-from ast import literal_eval
+from Day_1.database import graph_to_db, user_friends, get_csv_filenames
 
 
-batch_size = 1000
+graph_base_folder = os.path.join("..", "Task2", "Task2", "graph")
 
-graph_base_folder = os.path.join("Task1", "Task1", "graph")
-graph_folder_path = os.path.join("Task1", "Task1", "graph")
-graph_prefix = "part-v006-o000-r-"
+csv_filenames = get_csv_filenames(graph_base_folder)
+print("Extracting data from files: \n {}".format("\n".join(csv_filenames)))
 
+for csv_file in csv_filenames:
+    print("Opening file {}".format(csv_file))
+    graph_to_db(user_friends, csv_file)
 
-client = pymongo.MongoClient("localhost", 27017)
-db = client.odnoklassniki_day2
-user_collection = db.user_friends
-
-start = 0
-end = 16
-
-for i in range(start, end):
-
-    graph_filename = graph_prefix + str(i).rjust(5, "0")
-
-
-    graph_path = os.path.join(graph_base_folder, graph_filename)
-
-    print("Opening graph_file {}".format(graph_path))
-
-
-    graph_file = open(graph_path, 'r')
-    users = []
-
-    for line in graph_file:
-        user_id, friends_string = line.strip().split('\t')
-        user_id = int(user_id)
-        friends_set = literal_eval(friends_string)
-        friend_list = sorted(list(friends_set))
-        user = {"id": user_id, "friends": friend_list}
-        user_collection.insert(user)
