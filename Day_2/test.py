@@ -37,7 +37,7 @@ if __name__ == '__main__':
     folder_path = os.path.join('Task2', 'Task2', 'graph')
     indices = list(map(int, open('..\\ids_to_predict.txt').read().strip().split('\n')))
     predicted = get_prediction_by_nearest(indices, 5)
-    with open("results.txt", 'w') as file:
+    with open("results_jaccard_kailiak.txt", 'w') as file:
         for id, prediction in zip(indices, predicted):
-            print(id, prediction, sep='\t', file=file)
+            print(id, int(prediction), sep='\t', file=file)
 

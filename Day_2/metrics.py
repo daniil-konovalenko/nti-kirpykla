@@ -53,12 +53,15 @@ def is_representative(mask: int):
     return 1
 
 
-def jaccard_from_kailiak(userId_1: int, userId_2: int, graph: dict) -> float:
+def jaccard_from_kailiak(userId_1: int, userId_2: int) -> float:
     # user1 is user for which we make a prediction
-    neighborhood_1 = set(map(lambda x: x[0], graph[userId_1]))
-    neighborhood_2 = set(map(lambda x: x[0], graph[userId_2]))
+    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1)))
+    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2)))
     c_friends = neighborhood_1 & neighborhood_2
-    return len(c_friends) / len(neighborhood_1)
+    try:
+        return len(c_friends) / len(neighborhood_1)
+    except:
+        return 0
 
 
 def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
@@ -73,7 +76,7 @@ def list_nearest(user_id: int, friends: list) -> list:
     # return list with shape (count_of_friends, 2), where for every friend in descreasing order one line contains coefficient and location of friend
     answers = list()
     for friend_id, friend_mask in friends:
-        result_friend = (1 + jaccard_coefficient(user_id, friend_id)) * is_representative(friend_mask)
+        result_friend = (1 + jaccard_from_kailiak(user_id, friend_id)) * is_representative(friend_mask)
         answers.append((result_friend, get_location(friend_id)))
     answers.sort()
     answers.reverse()
