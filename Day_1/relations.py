@@ -1,4 +1,3 @@
-
 def mask_open(mask):
     opened = bin(mask)[2:]
     opened = '0' + opened[-1::-1]
@@ -8,7 +7,6 @@ def get_non_relatives(graph, user) -> list:
     friends = graph[user]
     non_relatives = [friend for friend in friends if not is_relative(user)]
     return non_relatives
-
 
 def is_relative(user: list) -> bool:
     mask = user[1]
