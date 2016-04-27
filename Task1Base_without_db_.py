@@ -26,7 +26,7 @@ def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
     return len(c_friends) / len(all_friends)
 
 
-def prediction_function(demog, graph):
+def prediction_function():
     results = np.empty((0, 2))
     y = np.empty((0, 1))
     without_age = list()
@@ -54,7 +54,6 @@ def prediction_function(demog, graph):
         probaility_score = list()
         jaccard_score = list()
         ages = list()
-        bad_ids = list()
 
         for i, user in enumerate(neighborhood):
             try:
@@ -64,7 +63,7 @@ def prediction_function(demog, graph):
             prob_score = is_probably_same_age(user)
             probaility_score.append(prob_score)
             try:
-                ages.append(demog[user[1]])
+                ages.append(get_age(user[1]))
             except KeyError:
                 jaccard_score.pop()
                 probaility_score.pop()
@@ -77,7 +76,7 @@ def prediction_function(demog, graph):
         result = np.sum(jaccard_score * probaility_score * ages) / np.sum(jaccard_score)
         result = np.hstack((userId, result))
         results = np.vstack((results, result))
-    return y, results, without_age, bad_ids
+    return y, results, without_age
 
 
 def bl(graph, demog, fd=False):
@@ -144,13 +143,13 @@ cols.append("birth_date")
 with open("demog.pkl", "wb") as fout:
     pickle.dump(demog, fout)
 graph = pickle.load(open('graph.pkl', 'rb'))
-
-y, results, without_age = prediction_function(demog, graph)
+'''
+y, results, without_age = prediction_function()
 X = results[:, 1]
 model = LinearRegression(normalize=True, n_jobs=-1)
 model.fit(X, y)
 y_hat = model.predict(without_age)
 with open("y_hat.pkl", "wb") as f:
     pickle.dump(y_hat, f)
-'''
+
 
