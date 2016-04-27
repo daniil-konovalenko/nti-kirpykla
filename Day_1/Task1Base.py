@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 
 from Day_1.relations import is_relevant, is_probably_same_age
-
+from Day_1.database import db, get_age, get_friends
 
 def visualisation(data: np.ndarray, a, b):
     x_line = [random.randint(0, 100) for x in range(10)]
@@ -120,31 +120,31 @@ def bl(graph, demog, fd=False):
             fd.write(str(pId) + '\t' + str(avg) + '\n')
     return res
 
+if __name__ == '__main__':
+    from GraphParser import graphParser
 
-from Day_1.GraphParser import graphParser
-
-cols = list()
-cols.append("userId")
-cols.append("birth_date")
-(demog, fd) = graphParser.parseFolderBySchema("Task1/Task1/trainDemography", 0, "", "userId", cols, True)
+    cols = list()
+    cols.append("userId")
+    cols.append("birth_date")
+    (demog, fd) = graphParser.parseFolderBySchema("Task1/Task1/trainDemography", 0, "", "userId", cols, True)
 
 
 
-cols = list()
-cols.append("from")
-cols.append("to")
-cols.append("links")
-cols.append('mask')
-(graph, fd) = graphParser.parseFolderBySchema("Task1/Task1/graph", 0, "", "from", cols, True)
-with open("graph.pkl", "wb") as fout:
-    pickle.dump(graph, fout)
+    cols = list()
+    cols.append("from")
+    cols.append("to")
+    cols.append("links")
+    cols.append('mask')
+    (graph, fd) = graphParser.parseFolderBySchema("Task1/Task1/graph", 0, "", "from", cols, True)
+    with open("graph.pkl", "wb") as fout:
+        pickle.dump(graph, fout)
 
-y, results, without_age = prediction_function(demog, graph)
-X = results[:, 1]
-model = LinearRegression(normalize=True, n_jobs=-1)
-model.fit(X, y)
-y_hat = model.predict(without_age)
-with open("y_hat.pkl", "wb") as f:
-    pickle.dump(y_hat, f)
+    y, results, without_age = prediction_function(demog, graph)
+    X = results[:, 1]
+    model = LinearRegression(normalize=True, n_jobs=-1)
+    model.fit(X, y)
+    y_hat = model.predict(without_age)
+    with open("y_hat.pkl", "wb") as f:
+        pickle.dump(y_hat, f)
 
 
