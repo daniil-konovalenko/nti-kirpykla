@@ -19,7 +19,7 @@ def get_location(user_id):
 def get_friends(user_id):
     result = db.user_friends.find_one({"_id": user_id})
     if result:
-        return result
+        return result['friends']
     else:
         return None
 
