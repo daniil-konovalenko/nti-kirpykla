@@ -1,16 +1,15 @@
 import os.path
 import pymongo
+from ast import literal_eval
 
-demography_base_folder = os.path.join("Task1", "Task1", "trainDemography")
-dem_prefix = "part-v004-o001-r-"
+demography_base_folder = os.path.join("Task2", "Task2", "trainDemography")
+dem_prefix = ""
 
 
 client = pymongo.MongoClient("localhost", 27017)
 db = client.odnoklassniki
 user_collection = db.user_data
 
-start = 0
-end = 16
 
 for i in range(start, end):
     dem_filename = dem_prefix + str(i).rjust(5, "0")

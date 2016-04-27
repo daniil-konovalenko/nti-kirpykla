@@ -11,7 +11,7 @@ graph_prefix = "part-v006-o000-r-"
 
 
 client = pymongo.MongoClient("localhost", 27017)
-db = client.odnoklassniki
+db = client.odnoklassniki_day2
 user_collection = db.user_friends
 
 start = 0
