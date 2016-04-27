@@ -1,3 +1,5 @@
+from ..Day_1.database import get_friends
+
 
 def mask_open(mask):
     opened = bin(mask)[2:]
