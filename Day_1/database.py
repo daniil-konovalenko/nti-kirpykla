@@ -13,8 +13,14 @@ user_data = db.user_data
 def get_age(user_id):
     return db.user_data.find_one({"_id": user_id})["birth_date"]
 
+
 def get_location(user_id):
-    return db.user_data.find_one({"_id": user_id})["location_id"]
+    result = db.user_data.find_one({"_id": user_id})
+    if result:
+        return result["location_id"]
+    else:
+        return None
+
 
 def get_friends(user_id):
     result = db.user_friends.find_one({"_id": user_id})
