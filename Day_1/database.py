@@ -27,7 +27,7 @@ def get_friends(user_id):
     if result:
         return result['friends']
     else:
-        return None
+        return []
 
 def get_csv_filenames(base_folder):
     csv_filenames = []
