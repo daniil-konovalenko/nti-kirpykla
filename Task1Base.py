@@ -17,13 +17,6 @@ def visualisation(data: np.ndarray, a, b):
     plt.show()
 
 
-def common_friends(userId_1: int, userId_2: list) -> float:
-    neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1))
-    neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2))
-    c_friends = list(neighborhood_1 & neighborhood_2)
-    return len(c_friends)
-
-
 def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
     neighborhood_1 = set(map(lambda x: x[0], get_friends(userId_1)))
     neighborhood_2 = set(map(lambda x: x[0], get_friends(userId_2)))
