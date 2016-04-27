@@ -1,3 +1,4 @@
+
 def mask_open(mask):
     opened = bin(mask)[2:]
     opened = '0' + opened[-1::-1]
@@ -42,7 +43,7 @@ def is_representative(mask: int):
     if not set_mask:
         return 1
     if non_represent & set_mask:
-        return 0
+        return 0.1
     if very_represent & set_mask:
         return 7
     return 1
@@ -65,7 +66,7 @@ def jaccard_coefficient(userId_1: int, userId_2: int) -> float:
 
 
 def list_nearest(user_id: int, friends: list) -> list:
-    # return list with shape (count_of_friends, 2), where for every friend in descreasin oder one line contains coefficient and location of friend
+    # return list with shape (count_of_friends, 2), where for every friend in descreasing order one line contains coefficient and location of friend
     answers = list()
     for friend_id, friend_mask in friends:
         result_friend = (1 + jaccard_coefficient(user_id, friend_id)) * is_representative(friend_mask)
@@ -77,7 +78,18 @@ def list_nearest(user_id: int, friends: list) -> list:
 
 def k_nearest(user_id, friends, k):
     list_1 = list_nearest(user_id, friends)
-    return list_1[:max(k, len(list_1))]
+    list_k = list_1[:max(k, len(list_1))]
+    dict = {}
+    for x,y in list_k:
+        dict.setdefault(y,0)
+        dict[y]+=1
+    ma = -1
+    ma_ind = -1
+    for ind, value in dict.items():
+        if ma < value:
+            ma = value
+            ma_ind = ind
+    return ma_ind
 
 
 def nearest(user_id, friends):
