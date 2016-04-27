@@ -66,7 +66,7 @@ def get_relationships(mask: int) -> set:
     mask = mask_open(mask)
     for index, bit in enumerate(mask):
         if bit == '1':
-            result.add(relationships[index])
+            result.add(relationships.get(index, ""))
 
     return  result
 

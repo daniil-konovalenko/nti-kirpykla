@@ -1,5 +1,8 @@
+from Day_1.database import get_location, get_friends
+from operator import itemgetter
 
 def mask_open(mask):
+    mask = int(mask)
     opened = bin(mask)[2:]
     opened = '0' + opened[-1::-1]
     return opened
@@ -26,7 +29,8 @@ def get_relationships(mask: int) -> set:
                      17: 'Child in law',
                      18: 'Godparent',
                      19: 'Godchild',
-                     20: 'Playing together'}
+                     20: 'Playing together',
+                     21: ''}
 
     mask = mask_open(mask)
     for index, bit in enumerate(mask):
@@ -80,9 +84,9 @@ def k_nearest(user_id, friends, k):
     list_1 = list_nearest(user_id, friends)
     list_k = list_1[:max(k, len(list_1))]
     dict = {}
-    for x,y in list_k:
-        dict.setdefault(y,0)
-        dict[y]+=1
+    for x, y in list_k:
+        dict.setdefault(y, 0)
+        dict[y] += 1
     ma = -1
     ma_ind = -1
     for ind, value in dict.items():
