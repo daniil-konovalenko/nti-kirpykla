@@ -1,4 +1,8 @@
 task/
 .idea/
-res/demog.pkl
-res/graph.pkl
+Day_1/res/demog.pkl
+Day_1/res/graph.pkl
+Day_2/Task2/Task2/graph
+Day_2/Task2/Task2/trainDemography
+Day_1/Task1/Task1/graph
+Day_1/Task1/Task1/trainDemography
