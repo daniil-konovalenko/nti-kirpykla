@@ -37,9 +37,9 @@ def get_prediction_by_nearest(ids: np.ndarray, k: int) -> np.ndarray:
 
 if __name__ == '__main__':
     folder_path = os.path.join('Task2', 'Task2', 'graph')
-    indices, answers = mk_test(1000, )
-    answers = np.array(answers)
+    indices = list(map(int, open('..\\ids_to_predict.txt').read().strip().split('\n')))
     predicted = get_prediction_by_nearest(indices, 5)
-    result = np.array([1 if answers[i] == predicted[i] else 0 for i in range(len(indices))])
-    print(result.sum() / len(result))
+    with open("results.txt", 'w') as file:
+        for id, prediction in zip(indices, predicted):
+            print(id, prediction, sep='\t', file=file)
 
